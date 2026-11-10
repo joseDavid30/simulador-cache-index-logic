@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: cache-service
+
+# Configuración opcional para JNA: le indica en qué carpeta del proyecto
+# (por ejemplo, una carpeta 'libs' en la raíz) buscará el archivo .dll o .so
+jna:
+  library:
+    path: .
