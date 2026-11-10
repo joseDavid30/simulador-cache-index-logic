@@ -1,0 +1,24 @@
+Este es el contrarto de las dos partes, web y arquitectura
+
+Apartado de arquitectura con c
+
+typedef struct {
+    long aciertos;
+    long fallos;
+    long reemplazos;
+} EstadisticasCache;
+
+int cache_simular(const unsigned long *direcciones, int n,
+                  int tam_linea, int num_conjuntos, int vias,
+                  int politica, EstadisticasCache *salida);
+
+
+
+Apartado de web con java
+
+public interface LibCache extends Library {
+    LibCache INSTANCE = Native.load("cache", LibCache.class);
+    int cache_simular(long [] direcciones, int n,
+                      int tamLinea, int numConjuntos, int vias,
+                      int politica, EstadisticasCache salida);
+}
