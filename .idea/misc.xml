@@ -6,6 +6,7 @@
       <list>
         <option value="$PROJECT_DIR$/cache-service/pom.xml" />
         <option value="$PROJECT_DIR$/traza-service/pom.xml" />
+        <option value="$PROJECT_DIR$/comparador-service/pom.xml" />
       </list>
     </option>
   </component>

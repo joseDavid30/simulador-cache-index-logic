@@ -5,7 +5,7 @@ public class ConfiguracionCacheDto {
     private int tamLinea;
     private int numConjuntos;
     private int vias;
-    private String politica;
+    private int politica; // <-- Cambiado de String a int
 
     public int getTamLinea() {
         return tamLinea;
@@ -31,11 +31,12 @@ public class ConfiguracionCacheDto {
         this.vias = vias;
     }
 
-    public String getPolitica() {
+    // Métodos actualizados a int:
+    public int getPolitica() {
         return politica;
     }
 
-    public void setPolitica(String politica) {
+    public void setPolitica(int politica) {
         this.politica = politica;
     }
 }

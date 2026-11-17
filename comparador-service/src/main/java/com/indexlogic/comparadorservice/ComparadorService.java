@@ -22,10 +22,15 @@ public class ComparadorService {
     public List<ResultadoComparacionDto> compararSimulaciones(ComparacionRequestDto request) {
         List<ResultadoComparacionDto> resultados = new ArrayList<>();
 
+        // 1. Convertimos la lista de strings hexadecimales ("0x00", "0x04", etc.) a un arreglo de tipo long[]
+        long[] direccionesLong = request.getDirecciones().stream()
+                .mapToLong(Long::decode) // Long.decode interpreta los prefijos "0x" correctamente
+                .toArray();
+
         for (ConfiguracionCacheDto config : request.getConfiguraciones()) {
-            // Mapeamos los datos para enviarlos al cache-service
+            // Mapeamos los datos limpios para enviarlos al cache-service
             Map<String, Object> simRequest = new HashMap<>();
-            simRequest.put("direcciones", request.getDirecciones());
+            simRequest.put("direcciones", direccionesLong); // <- Mandamos el arreglo numérico
             simRequest.put("tamLinea", config.getTamLinea());
             simRequest.put("numConjuntos", config.getNumConjuntos());
             simRequest.put("vias", config.getVias());
