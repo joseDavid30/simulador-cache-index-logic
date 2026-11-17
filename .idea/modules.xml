@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/simulador-cache-index-logic.iml" filepath="$PROJECT_DIR$/.idea/simulador-cache-index-logic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/traza-service/traza-service.iml" filepath="$PROJECT_DIR$/traza-service/traza-service.iml" />
     </modules>
   </component>
 </project>
