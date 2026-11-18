@@ -1,7 +1,9 @@
+
 package com.indexlogic.trazaservice.controller;
 
 import com.indexlogic.trazaservice.entity.TrazaEntity;
 import com.indexlogic.trazaservice.service.TrazaService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/trazas")
-@CrossOrigin(origins = "*") // Permite peticiones desde el frontend de Angular
+@CrossOrigin(origins = "*")
 public class TrazaController {
 
     private final TrazaService trazaService;
@@ -19,14 +21,16 @@ public class TrazaController {
     }
 
     @PostMapping
-    public ResponseEntity<TrazaEntity> crearTraza(@RequestBody TrazaEntity traza) {
+    public ResponseEntity<TrazaEntity> crearTraza(
+            @RequestBody TrazaEntity traza) {
+
         TrazaEntity nuevaTraza = trazaService.guardarTraza(traza);
-        return ResponseEntity.ok(nuevaTraza);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaTraza);
     }
 
     @GetMapping
     public ResponseEntity<List<TrazaEntity>> listarTrazas() {
-        List<TrazaEntity> trazas = trazaService.obtenerTodas();
-        return ResponseEntity.ok(trazas);
+        return ResponseEntity.ok(trazaService.obtenerTodas());
     }
 }

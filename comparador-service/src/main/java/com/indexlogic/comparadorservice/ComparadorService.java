@@ -3,6 +3,8 @@ package com.indexlogic.comparadorservice;
 import com.indexlogic.comparadorservice.dto.ComparacionRequestDto;
 import com.indexlogic.comparadorservice.dto.ConfiguracionCacheDto;
 import com.indexlogic.comparadorservice.dto.ResultadoComparacionDto;
+import com.indexlogic.comparadorservice.dto.TrazaRequestDto;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,39 +16,123 @@ import java.util.Map;
 public class ComparadorService {
 
     private final CacheServiceClient cacheServiceClient;
+    private final TrazaServiceClient trazaServiceClient;
 
-    public ComparadorService(CacheServiceClient cacheServiceClient) {
+    public ComparadorService(
+            CacheServiceClient cacheServiceClient,
+            TrazaServiceClient trazaServiceClient) {
+
         this.cacheServiceClient = cacheServiceClient;
+        this.trazaServiceClient = trazaServiceClient;
     }
 
-    public List<ResultadoComparacionDto> compararSimulaciones(ComparacionRequestDto request) {
+    public List<ResultadoComparacionDto> compararSimulaciones(
+            ComparacionRequestDto request) {
+
         List<ResultadoComparacionDto> resultados = new ArrayList<>();
 
-        // 1. Convertimos la lista de strings hexadecimales ("0x00", "0x04", etc.) a un arreglo de tipo long[]
         long[] direccionesLong = request.getDirecciones().stream()
-                .mapToLong(Long::decode) // Long.decode interpreta los prefijos "0x" correctamente
+                .mapToLong(Long::decode)
                 .toArray();
 
         for (ConfiguracionCacheDto config : request.getConfiguraciones()) {
-            // Mapeamos los datos limpios para enviarlos al cache-service
+
             Map<String, Object> simRequest = new HashMap<>();
-            simRequest.put("direcciones", direccionesLong); // <- Mandamos el arreglo numérico
+
+            simRequest.put("direcciones", direccionesLong);
             simRequest.put("tamLinea", config.getTamLinea());
             simRequest.put("numConjuntos", config.getNumConjuntos());
             simRequest.put("vias", config.getVias());
             simRequest.put("politica", config.getPolitica());
 
-            // Invocamos al cache-service mediante el cliente HTTP
+            // 1. Ejecutar simulación en cache-service
             Object stats = cacheServiceClient.simular(simRequest);
 
-            // Empaquetamos la configuración junto con el resultado obtenido
-            ResultadoComparacionDto resDto = new ResultadoComparacionDto();
+            // 2. Guardar resultados en el DTO de respuesta
+            ResultadoComparacionDto resDto =
+                    new ResultadoComparacionDto();
+
             resDto.setConfiguracion(config);
             resDto.setEstadisticas(stats);
 
             resultados.add(resDto);
+
+            // 3. Preparar información para traza-service
+            if (!(stats instanceof Map)) {
+                throw new IllegalStateException(
+                        "Las estadísticas recibidas no tienen el formato esperado: "
+                                + stats
+                );
+            }
+
+            Map<?, ?> estadisticas = (Map<?, ?>) stats;
+
+            long aciertos = obtenerNumero(estadisticas, "aciertos");
+            long fallos = obtenerNumero(estadisticas, "fallos");
+            long reemplazos = obtenerNumero(estadisticas, "reemplazos");
+
+            TrazaRequestDto nuevaTraza = new TrazaRequestDto();
+
+            nuevaTraza.setTrazaRuta(request.getTrazaRuta());
+
+            // Configuración de caché
+            int capacidad = Math.multiplyExact(
+                    Math.multiplyExact(config.getTamLinea(),
+                            config.getNumConjuntos()),
+                    config.getVias()
+            );
+
+            nuevaTraza.setCapacidad(capacidad);
+            nuevaTraza.setTamLinea(config.getTamLinea());
+            nuevaTraza.setNumConjuntos(config.getNumConjuntos());
+            nuevaTraza.setVias(config.getVias());
+            nuevaTraza.setPolitica(config.getPolitica());
+
+            // Estadísticas de simulación
+            nuevaTraza.setAciertos(aciertos);
+            nuevaTraza.setFallos(fallos);
+            nuevaTraza.setReemplazos(reemplazos);
+
+            // Correspondencia provisional con las columnas antiguas
+            nuevaTraza.setHits(Math.toIntExact(aciertos));
+            nuevaTraza.setMisses(Math.toIntExact(fallos));
+
+            // Tiempo no proporcionado todavía por cache-service
+            nuevaTraza.setTiempoTotal(0);
+
+            long total = aciertos + fallos;
+
+            double tasa = total > 0
+                    ? (aciertos * 100.0) / total
+                    : 0;
+
+            nuevaTraza.setTasaAciertos(tasa);
+
+            // 4. Enviar resultados a traza-service
+            System.out.println(
+                    "Enviando resultados hacia traza-service..."
+            );
+
+            trazaServiceClient.guardarTraza(nuevaTraza);
+
+            System.out.println(
+                    "Resultados guardados correctamente en traza-service."
+            );
         }
 
         return resultados;
+    }
+
+    private long obtenerNumero(Map<?, ?> datos, String campo) {
+
+        Object valor = datos.get(campo);
+
+        if (valor instanceof Number) {
+            return ((Number) valor).longValue();
+        }
+
+        throw new IllegalStateException(
+                "No se encontró una estadística numérica llamada: " + campo
+        );
     }
 }

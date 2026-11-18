@@ -39,16 +39,17 @@ public class FlujoCompletoRunner implements CommandLineRunner {
 
         System.out.println("Traza leída con éxito. Total de direcciones: " + direcciones.size());
 
-        // 2. Definir la configuración usando String para la política ("LRU" o "FIFO")
+        // 2. Definir la configuración usando int para la política ("0 LRU" o "1 FIFO")
         ConfiguracionCacheDto config1 = new ConfiguracionCacheDto();
-        config1.setTamLinea(4);
+        config1.setTamLinea(32);
         config1.setNumConjuntos(4);
-        config1.setVias(2);
+        config1.setVias(4);
         config1.setPolitica(0);
 
         ComparacionRequestDto request = new ComparacionRequestDto();
         request.setDirecciones(direcciones);
         request.setConfiguraciones(List.of(config1));
+        request.setTrazaRuta("trazas/traza_prueba1.txt");
 
         // 3. Ejecutar a través del servicio orquestador
         try {

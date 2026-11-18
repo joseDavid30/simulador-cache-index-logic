@@ -1,3 +1,4 @@
+
 package com.indexlogic.trazaservice.entity;
 
 import jakarta.persistence.*;
@@ -13,16 +14,52 @@ public class TrazaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "capacidad", nullable = false)
+    private Integer capacidad;
+
+    @Column(name = "traza_ruta", nullable = false)
     private String trazaRuta;
 
-    @Column(nullable = false)
-    private int capacidad;
+    @Column(name = "tam_linea", nullable = false)
+    private int tamLinea;
 
-    private int hits;
-    private int misses;
+    @Column(name = "num_conjuntos", nullable = false)
+    private int numConjuntos;
+
+    @Column(name = "vias", nullable = false)
+    private int vias;
+
+    @Column(name = "politica", nullable = false)
+    private int politica;
+
+    @Column(name = "hits", nullable = false)
+    private Integer hits;
+
+    @Column(name = "misses", nullable = false)
+    private Integer misses;
+
+    @Column(name = "aciertos", nullable = false)
+    private long aciertos;
+
+    @Column(name = "fallos", nullable = false)
+    private long fallos;
+
+    @Column(name = "reemplazos", nullable = false)
+    private long reemplazos;
+
+    @Column(name = "tiempo_total", nullable = false)
     private long tiempoTotal;
+
+    @Column(name = "tasa_aciertos", nullable = false)
     private double tasaAciertos;
 
-    private LocalDateTime fechaEjecucion = LocalDateTime.now();
+    @Column(name = "fecha_ejecucion")
+    private LocalDateTime fechaEjecucion;
+
+    @PrePersist
+    public void antesDeGuardar() {
+        if (fechaEjecucion == null) {
+            fechaEjecucion = LocalDateTime.now();
+        }
+    }
 }
