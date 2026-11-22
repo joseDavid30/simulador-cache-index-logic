@@ -4,21 +4,22 @@ import com.indexlogic.comparadorservice.ComparadorService;
 import com.indexlogic.comparadorservice.dto.ComparacionRequestDto;
 import com.indexlogic.comparadorservice.dto.ConfiguracionCacheDto;
 import com.indexlogic.comparadorservice.dto.ResultadoComparacionDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class FlujoCompletoRunner implements CommandLineRunner {
 
-    @Autowired
-    private ComparadorService comparadorService;
+    private final ComparadorService comparadorService;
+
+    public FlujoCompletoRunner(ComparadorService comparadorService) {
+        this.comparadorService = comparadorService;
+    }
 
     @Override
     public void run(String... args) throws Exception {
@@ -31,11 +32,11 @@ public class FlujoCompletoRunner implements CommandLineRunner {
 
         // 1. Cargar el archivo de traza de prueba
 // En lugar de Paths.get(...), puedes cargarlo así de forma segura:
-        org.springframework.core.io.Resource resource = new org.springframework.core.io.ClassPathResource("trazas/traza_prueba1.txt");
-        List<String> direcciones = java.nio.file.Files.readAllLines(resource.getFile().toPath()).stream()
+        ClassPathResource resource = new ClassPathResource("trazas/traza_prueba1.txt");
+        List<String> direcciones = Files.readAllLines(resource.getFile().toPath()).stream()
                 .map(String::trim)
                 .filter(s -> !s.isEmpty() && !s.startsWith("#"))
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
 
         System.out.println("Traza leída con éxito. Total de direcciones: " + direcciones.size());
 

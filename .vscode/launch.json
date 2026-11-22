@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "ComparadorServiceApplication",
+            "request": "launch",
+            "mainClass": "com.indexlogic.comparadorservice.ComparadorServiceApplication",
+            "projectName": "comparador-service"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CacheServiceApplication<cache-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.indexlogic.cacheservice.CacheServiceApplication",
+            "projectName": "cache-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

@@ -5,9 +5,9 @@ spring:
   application:
     name: traza-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/index_logic_db
+    url: jdbc:postgresql://localhost:5433/index_logic_db
     username: postgres
-    password: tu_password
+    password: 1234
   jpa:
     hibernate:
       ddl-auto: update # Crea o actualiza las tablas automáticamente en desarrollo
