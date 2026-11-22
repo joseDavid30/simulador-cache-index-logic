@@ -1,0 +1,126 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* PANEL IZQUIERDO */
+.left-panel {
+  background-color: #0e1926;
+  color: #ffffff;
+}
+
+.logo-square {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.bg-teal {
+  background-color: #10b981 !important;
+}
+
+.bg-orange {
+  background-color: #f97316 !important;
+}
+
+.text-teal {
+  color: #10b981 !important;
+}
+
+.text-orange {
+  color: #f97316 !important;
+}
+
+.left-subtitle {
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.text-addr {
+  color: #94a3b8;
+}
+
+.text-footer-left {
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+/* MATRIZ DE BLOQUES DE CACHÉ */
+.cache-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cache-row {
+  display: flex;
+  gap: 6px;
+}
+
+.cache-cell {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.cell-idle {
+  background-color: #172536;
+  border: 1px solid #22344a;
+}
+
+.cell-hit {
+  background-color: #14b898;
+}
+
+.cell-miss {
+  background-color: #f97316;
+}
+
+/* PANEL DERECHO Y TARJETA */
+.right-panel {
+  background-color: #f8fafc;
+}
+
+.login-card {
+  max-width: 400px;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.text-dark-title {
+  color: #0f172a;
+}
+
+.custom-input {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.custom-input::placeholder {
+  color: #94a3b8;
+}
+
+.custom-input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.15);
+}
+
+.btn-teal {
+  background-color: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.92rem;
+}
+
+.btn-teal:hover {
+  background-color: #059669;
+  color: #ffffff;
+}

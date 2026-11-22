@@ -2,6 +2,7 @@ import { ChangeDetectorRef,Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SimuladorService } from '../../services/simulador.service';
+import { Router } from '@angular/router';
 
 import {
   ComparacionRequest,
@@ -70,8 +71,11 @@ export class DashboardComponent implements OnInit {
   // --- BLOQUE 04: HISTORIAL ---
   historial: HistorialTraza[] = [];
 
-  constructor(private simuladorService: SimuladorService,private cdr: ChangeDetectorRef) {}
-
+  constructor(
+    private simuladorService: SimuladorService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) {}
   ngOnInit(): void {
     this.cargarHistorial();
   }
@@ -264,5 +268,9 @@ export class DashboardComponent implements OnInit {
 
   obtenerNombrePolitica(codigo: number): string {
     return codigo === 1 ? 'LRU' : 'FIFO';
+  }
+  cerrarSesion(): void {
+    localStorage.removeItem('usuario_index_logic');
+    this.router.navigate(['/login']);
   }
 }
