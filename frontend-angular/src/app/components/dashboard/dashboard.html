@@ -1,0 +1,321 @@
+<!-- BARRA SUPERIOR -->
+<nav class="navbar navbar-dark topbar-dark px-4 py-2">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center gap-2">
+      <span class="logo-square bg-teal"></span>
+      <span class="logo-square bg-orange"></span>
+      <span class="navbar-brand mb-0 fw-bold fs-6 tracking-wide ms-1">INDEX LOGIC</span>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <span class="text-light-muted small d-none d-sm-inline">María Torres · Docente</span>
+      <button type="button" class="btn btn-salir btn-sm px-3 fw-semibold">Salir</button>
+    </div>
+  </div>
+</nav>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="container-xl py-4">
+  <div class="row g-4">
+
+    <!-- COLUMNA IZQUIERDA (01 Y 02) -->
+    <div class="col-lg-6 d-flex flex-column gap-4">
+
+      <!-- TARJETA 01: TRAZA DE ACCESOS -->
+      <section class="card card-panel p-4">
+        <div class="d-flex align-items-center gap-3 mb-2">
+          <span class="badge-step bg-teal">01</span>
+          <h5 class="mb-0 fw-bold text-dark-title">Traza de accesos</h5>
+        </div>
+
+        <p class="text-muted small mb-3">Escribe una dirección hexadecimal por línea</p>
+
+        <textarea
+          class="form-control trace-textarea font-monospace mb-2"
+          rows="6"
+          [(ngModel)]="trazaTexto"
+          (ngModelChange)="alEditarTraza()"
+          placeholder="0x0040A000&#10;0x0040A004&#10;0x0040C000"></textarea>
+
+        <div class="mb-3 small">
+          <span *ngIf="trazaEsValida" class="text-teal fw-semibold">
+            {{ direccionesLimpias.length }} accesos · válida ✓
+          </span>
+          <span *ngIf="!trazaEsValida && direccionesLimpias.length > 0" class="text-danger fw-semibold">
+            Verifica que todas las líneas tengan formato hexadecimal (ej. 0x0040A000)
+          </span>
+          <span *ngIf="direccionesLimpias.length === 0" class="text-muted">
+            Ingresa al menos una dirección hexadecimal
+          </span>
+        </div>
+
+        <div class="row g-2">
+          <div class="col-6">
+            <button
+              type="button"
+              class="btn btn-preset w-100 py-2 fw-semibold"
+              [class.active-preset]="tipoPresetActivo === 'filas'"
+              (click)="cargarMatrizFilas()">
+              Matriz 512×512 por filas
+            </button>
+          </div>
+          <div class="col-6">
+            <button
+              type="button"
+              class="btn btn-preset w-100 py-2 fw-semibold"
+              [class.active-preset]="tipoPresetActivo === 'columnas'"
+              (click)="cargarMatrizColumnas()">
+              Matriz 512×512 por columnas
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TARJETA 02: CONFIGURACIONES DE CACHÉ -->
+      <section class="card card-panel p-4">
+        <div class="d-flex align-items-center gap-3 mb-2">
+          <span class="badge-step bg-orange">02</span>
+          <h5 class="mb-0 fw-bold text-dark-title">Configuraciones de caché</h5>
+        </div>
+
+        <p class="text-muted small mb-3">Hasta 3 configuraciones para comparar</p>
+
+        <!-- LISTA DE CONFIGURACIONES AGREGADAS -->
+        <div class="d-flex flex-column gap-2 mb-3">
+          <div
+            *ngFor="let cfg of configuraciones; let i = index"
+            class="config-item d-flex align-items-center justify-content-between px-3 py-2"
+            [ngClass]="'border-config-' + cfg.letra.toLowerCase()">
+
+            <div class="d-flex align-items-center gap-3">
+              <span class="config-letter" [ngClass]="'bg-config-' + cfg.letra.toLowerCase()">
+                {{ cfg.letra }}
+              </span>
+              <span class="fw-medium text-dark small">
+                {{ formatearCapacidad(cfg.capacidadBytes) }} · Línea {{ cfg.tamLinea }} B · {{ cfg.vias }} vías · {{ cfg.politicaNombre }}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              class="btn-remove-config"
+              title="Eliminar configuración"
+              (click)="eliminarConfiguracion(i)">
+              ×
+            </button>
+          </div>
+        </div>
+
+        <!-- BOTÓN + AGREGAR CONFIGURACIÓN -->
+        <button
+          *ngIf="!mostrandoFormularioConfig && configuraciones.length < 3"
+          type="button"
+          class="btn btn-add-config w-100 py-2 fw-semibold"
+          (click)="abrirFormularioConfig()">
+          + Agregar configuración
+        </button>
+
+        <!-- FORMULARIO DESPLEGABLE PARA NUEVA CONFIGURACIÓN -->
+        <div *ngIf="mostrandoFormularioConfig" class="border-top pt-3 mt-1">
+          <div class="row g-3 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold text-dark-title mb-1">Tamaño total</label>
+              <select class="form-select form-select-sm py-2" [(ngModel)]="nuevaCapacidadBytes">
+                <option *ngFor="let op of opcionesCapacidad" [ngValue]="op.bytes">
+                  {{ op.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-6">
+              <label class="form-label small fw-bold text-dark-title mb-1">Tamaño de línea</label>
+              <select class="form-select form-select-sm py-2" [(ngModel)]="nuevoTamLinea">
+                <option *ngFor="let lin of opcionesLinea" [ngValue]="lin">
+                  {{ lin }} B
+                </option>
+              </select>
+            </div>
+
+            <div class="col-6">
+              <label class="form-label small fw-bold text-dark-title mb-1">Número de vías</label>
+              <select class="form-select form-select-sm py-2" [(ngModel)]="nuevasVias">
+                <option *ngFor="let via of opcionesVias" [ngValue]="via">
+                  {{ via }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-6">
+              <label class="form-label small fw-bold text-dark-title mb-1">Política</label>
+              <div class="d-flex gap-2">
+                <button
+                  type="button"
+                  class="btn btn-sm flex-fill py-2 fw-bold"
+                  [ngClass]="nuevaPoliticaNombre === 'LRU' ? 'btn-policy-active' : 'btn-policy-idle'"
+                  (click)="nuevaPoliticaNombre = 'LRU'">
+                  LRU
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm flex-fill py-2 fw-bold"
+                  [ngClass]="nuevaPoliticaNombre === 'FIFO' ? 'btn-policy-active' : 'btn-policy-idle'"
+                  (click)="nuevaPoliticaNombre = 'FIFO'">
+                  FIFO
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-muted small mb-3">
+            {{ nuevaCapacidadBytes }} ÷ ({{ nuevoTamLinea }} × {{ nuevasVias }}) = {{ conjuntosCalculados }} conjuntos
+          </p>
+
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-teal px-4 fw-semibold" (click)="guardarConfiguracion()">
+              Guardar
+            </button>
+            <button type="button" class="btn btn-preset px-4 fw-semibold" (click)="cancelarFormularioConfig()">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- BOTÓN PRINCIPAL SIMULAR -->
+      <button
+        type="button"
+        class="btn btn-teal w-100 py-3 fw-bold fs-6 shadow-sm"
+        [disabled]="!trazaEsValida || configuraciones.length === 0 || simulando"
+        (click)="simular()">
+        <span *ngIf="!simulando">▶ Simular</span>
+        <span *ngIf="simulando">Simulando...</span>
+      </button>
+
+      <div *ngIf="errorSimulacion" class="alert alert-danger py-2 small mb-0">
+        {{ errorSimulacion }}
+      </div>
+
+    </div>
+
+    <!-- COLUMNA DERECHA (03 Y 04) -->
+    <div class="col-lg-6 d-flex flex-column gap-4">
+
+      <!-- TARJETA 03: RESULTADOS -->
+      <section class="card card-panel p-4">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <span class="badge-step bg-blue">03</span>
+          <h5 class="mb-0 fw-bold text-dark-title">Resultados</h5>
+        </div>
+
+        <!-- TABLA DE RESULTADOS -->
+        <div class="table-responsive mb-3">
+          <table class="table table-bordered align-middle mb-0 results-table">
+            <thead>
+            <tr>
+              <th>Config</th>
+              <th>Aciertos</th>
+              <th>Fallos</th>
+              <th>Reemplazos</th>
+              <th>Tasa</th>
+            </tr>
+            </thead>
+            <tbody *ngIf="resultados.length > 0">
+            <tr *ngFor="let res of resultados">
+              <td class="fw-semibold">{{ res.letra }}</td>
+              <td>{{ formatearNumero(res.aciertos) }}</td>
+              <td>{{ formatearNumero(res.fallos) }}</td>
+              <td>{{ formatearNumero(res.reemplazos) }}</td>
+              <td class="fw-bold" [ngClass]="res.tasaAciertos > 0 ? 'text-teal' : 'text-orange'">
+                {{ res.tasaAciertos.toFixed(2) }}%
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ESTADO VACÍO -->
+        <div *ngIf="resultados.length === 0" class="text-center text-muted py-4 my-2 small">
+          Ejecuta una simulación para ver resultados
+        </div>
+
+        <!-- BARRAS DE TASA DE ACIERTO -->
+        <div class="mt-2">
+          <p class="fw-bold text-secondary small mb-3">Tasa de acierto por configuración</p>
+
+          <div *ngFor="let res of resultados" class="d-flex align-items-center gap-3 mb-3">
+            <span class="small text-dark-title text-nowrap" style="min-width: 120px;">
+              {{ res.letra }} · {{ res.vias }} vías {{ res.politicaNombre }}
+            </span>
+
+            <div class="progress flex-grow-1 custom-progress">
+              <div
+                class="progress-bar bg-teal"
+                role="progressbar"
+                [style.width.%]="res.tasaAciertos">
+              </div>
+            </div>
+
+            <span
+              class="fw-bold small text-end"
+              style="min-width: 58px;"
+              [ngClass]="res.tasaAciertos > 0 ? 'text-teal' : 'text-orange'">
+              {{ res.tasaAciertos.toFixed(2) }}%
+            </span>
+          </div>
+        </div>
+
+        <!-- RECUADRO EXPLICATIVO (SE MUESTRA AL HABER RESULTADOS) -->
+        <div *ngIf="resultados.length > 0" class="explanation-box p-3 mt-3">
+          <p class="fw-bold text-teal-dark mb-1 small">¿Por qué difieren?</p>
+          <p class="mb-1 small text-teal-dark">
+            Por filas: una línea de 64 B sirve 16 elementos → 1 fallo y 15 aciertos.
+          </p>
+          <p class="mb-0 small text-teal-dark">
+            Por columnas: cada acceso salta 2 048 B → la línea se expulsa antes de reutilizarse.
+          </p>
+        </div>
+      </section>
+
+      <!-- TARJETA 04: HISTORIAL DE SIMULACIONES -->
+      <section class="card card-panel p-4">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <span class="badge-step bg-slate">04</span>
+          <h5 class="mb-0 fw-bold text-dark-title">Historial de simulaciones</h5>
+        </div>
+
+        <div *ngIf="historial.length === 0" class="text-center text-muted py-3 small">
+          No hay simulaciones registradas aún en la base de datos.
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+          <div
+            *ngFor="let item of historial"
+            class="history-row d-flex align-items-center justify-content-between px-3 py-2">
+
+            <div class="d-flex align-items-center gap-3">
+              <span class="text-muted small font-monospace">#0{{ item.id }}</span>
+              <span class="fw-medium text-dark small">{{ item.trazaRuta }}</span>
+            </div>
+
+            <div class="d-flex align-items-center gap-4">
+              <span class="text-muted small d-none sm-inline d-sm-inline">
+                {{ formatearCapacidad(item.capacidad) }} · {{ item.vias }} v · {{ obtenerNombrePolitica(item.politica) }}
+              </span>
+              <span
+                class="fw-bold small"
+                [ngClass]="item.tasaAciertos > 0 ? 'text-teal' : 'text-orange'">
+                {{ item.tasaAciertos.toFixed(2) }}%
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- PIE DE PÁGINA -->
+  <footer class="text-center text-muted small mt-5 mb-2">
+    Pantalla 2 de 2 · Simulador
+  </footer>
+</main>

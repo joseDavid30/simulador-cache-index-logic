@@ -1,0 +1,257 @@
+/* COLORES BASE */
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #f3f5f8;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.topbar-dark {
+  background-color: #0f172a;
+}
+
+.text-light-muted {
+  color: #cbd5e1;
+}
+
+.text-dark-title {
+  color: #0f172a;
+}
+
+.text-teal {
+  color: #10b981 !important;
+}
+
+.text-teal-dark {
+  color: #065f46;
+}
+
+.text-orange {
+  color: #f97316 !important;
+}
+
+.bg-teal {
+  background-color: #10b981 !important;
+  color: #ffffff;
+}
+
+.bg-orange {
+  background-color: #f97316 !important;
+  color: #ffffff;
+}
+
+.bg-blue {
+  background-color: #3b82f6 !important;
+  color: #ffffff;
+}
+
+.bg-slate {
+  background-color: #64748b !important;
+  color: #ffffff;
+}
+
+/* LOGO Y BOTÓN SALIR */
+.logo-square {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.btn-salir {
+  background-color: #1e293b;
+  color: #ffffff;
+  border: 1px solid #334155;
+  border-radius: 8px;
+}
+
+.btn-salir:hover {
+  background-color: #334155;
+  color: #ffffff;
+}
+
+/* TARJETAS PRINCIPALES */
+.card-panel {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+}
+
+.badge-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 26px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* BLOQUE 01: TEXTAREA Y PRESETS */
+.trace-textarea {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: #334155;
+  resize: vertical;
+}
+
+.trace-textarea:focus {
+  background-color: #ffffff;
+  border-color: #10b981;
+  box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.15);
+}
+
+.btn-preset {
+  background-color: #eff6ff;
+  color: #2563eb;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 0.82rem;
+}
+
+.btn-preset:hover,
+.active-preset {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* BLOQUE 02: CONFIGURACIONES */
+.config-item {
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+.border-config-a {
+  border: 1.5px solid #10b981;
+}
+
+.border-config-b {
+  border: 1.5px solid #f97316;
+}
+
+.border-config-c {
+  border: 1.5px solid #3b82f6;
+}
+
+.config-letter {
+  width: 28px;
+  height: 24px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #ffffff;
+}
+
+.bg-config-a {
+  background-color: #10b981;
+}
+
+.bg-config-b {
+  background-color: #f97316;
+}
+
+.bg-config-c {
+  background-color: #3b82f6;
+}
+
+.btn-remove-config {
+  background-color: #fee2e2;
+  color: #ef4444;
+  border: none;
+  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove-config:hover {
+  background-color: #fecaca;
+}
+
+.btn-add-config {
+  border: 1.5px dashed #5eead4;
+  background-color: #f0fdfa;
+  color: #0d9488;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+
+.btn-add-config:hover {
+  background-color: #ccfbf1;
+}
+
+.btn-policy-active {
+  background-color: #ecfdf5;
+  color: #059669;
+  border: 1.5px solid #10b981;
+  border-radius: 8px;
+}
+
+.btn-policy-idle {
+  background-color: #ffffff;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.btn-teal {
+  background-color: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+}
+
+.btn-teal:hover:not(:disabled) {
+  background-color: #059669;
+  color: #ffffff;
+}
+
+.btn-teal:disabled {
+  background-color: #94a3b8;
+  opacity: 0.7;
+}
+
+/* BLOQUE 03: RESULTADOS */
+.results-table thead th {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-color: #cbd5e1;
+}
+
+.results-table tbody td {
+  font-size: 0.88rem;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.custom-progress {
+  height: 16px;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+}
+
+.explanation-box {
+  background-color: #ecfdf5;
+  border: 1.5px solid #10b981;
+  border-radius: 10px;
+}
+
+/* BLOQUE 04: HISTORIAL */
+.history-row {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
