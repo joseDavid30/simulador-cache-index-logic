@@ -1,13 +1,6 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 
-// Estructura para devolverle a Java los 3 números que pide
-typedef struct {
-    long aciertos;
-    long fallos;
-    long reemplazos;
-} EstadisticasCache;
 
 // Función auxiliar para saber si un número es potencia de 2 (ej: 4, 16, 64)
 static int es_potencia_de_dos(int x) {
