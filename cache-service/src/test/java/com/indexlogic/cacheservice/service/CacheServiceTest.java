@@ -34,9 +34,9 @@ class SimulacionServiceTest {
                 .toArray();
 
         // 3. Definimos los parámetros de configuración de la caché
-        int tamLinea = 4;       // Tamaño de la línea de caché
-        int numConjuntos = 4;   // Número de conjuntos
-        int vias = 2;           // Asociatividad (vías)
+        int tamLinea = 32;       // Tamaño de la línea de caché
+        int numConjuntos = 128;   // Número de conjuntos
+        int vias = 1;           // Asociatividad (vías)
         int politica = 0;       // 0 = LRU, 1 = FIFO
 
         // 4. Ejecutamos la simulación llamando a la biblioteca en C a través de JNA

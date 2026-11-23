@@ -1,0 +1,86 @@
+name: index-logic
+
+services:
+  db:
+    image: postgres:15
+    container_name: index-logic-db
+    environment:
+      POSTGRES_DB: index_logic_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - datos-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d index_logic_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    restart: unless-stopped
+
+  cache-service:
+    build: ./cache-service
+    ports:
+      - "8081:8081"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    restart: unless-stopped
+
+  traza-service:
+    build: ./traza-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/index_logic_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    restart: unless-stopped
+
+  comparador-service:
+    build: ./comparador-service
+    ports:
+      - "8083:8083"
+    environment:
+      CACHE_SERVICE_URL: http://cache-service:8081/api/cache/simular
+      TRAZA_SERVICE_URL: http://traza-service:8082/api/trazas
+    depends_on:
+      - cache-service
+      - traza-service
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend-angular
+    ports:
+      - "4200:80"
+    depends_on:
+      - comparador-service
+      - traza-service
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    restart: unless-stopped
+
+volumes:
+  datos-db:
